@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, redirect, session, jsonify
 from bson import ObjectId
 from werkzeug.security import check_password_hash
 from datetime import datetime, timedelta, time, date
+#from mailer import send_admin_email, send_client_email
 from mailer import send_admin_email, send_client_email
+
 from db import appointments, users
 
 app = Flask(__name__)
@@ -104,7 +106,11 @@ def book_submit():
         "status": "pending"
         
     })
+  #  send_admin_email(name, phone, service, date_selected, hour)
+   # send_client_email(email, name, service, date_selected, hour)
     send_admin_email(name, phone, service, date_selected, hour)
+
+# שליחת מייל ללקוח (אם יש שדה email בטופס)
     send_client_email(email, name, service, date_selected, hour)
     return jsonify(status="success")
 
