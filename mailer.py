@@ -1,11 +1,20 @@
-import smtplib
-from email.mime.text import MIMEText
+# 
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
-# ---- הגדרות ----
-ADMIN_EMAIL = "maronhawa13@gmail.com"
-APP_PASSWORD = "bnnjcjinhqytwurv"  # הסיסמה הצהובה מגוגל
+# המייל של המנהל – לשים פה את המייל שיקבל התראות
+ADMIN_EMAIL = "maronhawa1@gmail.com"
+
+# נמשוך את המפתח מהסביבה (Environment Variables ברנדר)
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+
 
 def send_admin_email(name, phone, service, date, hour):
+    if not SENDGRID_API_KEY:
+        print("Missing SENDGRID_API_KEY, cannot send admin email")
+        return
+
     subject = "תור חדש נקבע במספרה"
     body = f"""
 נרשם תור חדש:
@@ -16,19 +25,25 @@ def send_admin_email(name, phone, service, date, hour):
 תאריך: {date}
 שעה: {hour}
 
-כדאי לבדוק במערכת הניהול.
+מומלץ להיכנס לפאנל הניהול.
 """
 
-    msg = MIMEText(body, "plain", "utf-8")
-    msg["Subject"] = subject
-    msg["From"] = ADMIN_EMAIL
-    msg["To"] = ADMIN_EMAIL
+    message = Mail(
+        from_email=ADMIN_EMAIL,
+        to_emails=ADMIN_EMAIL,
+        subject=subject,
+        plain_text_content=body,
+    )
 
-    # שליחה
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(ADMIN_EMAIL, APP_PASSWORD)
-        server.sendmail(ADMIN_EMAIL, ADMIN_EMAIL, msg.as_string())
+    sg = SendGridAPIClient(SENDGRID_API_KEY)
+    sg.send(message)
+
+
 def send_client_email(client_email, name, service, date, hour):
+    if not SENDGRID_API_KEY:
+        print("Missing SENDGRID_API_KEY, cannot send client email")
+        return
+
     subject = "אישור קביעת תור - מספרת ברבר שופ"
     body = f"""
 שלום {name},
@@ -43,11 +58,12 @@ def send_client_email(client_email, name, service, date, hour):
 מספרת ברבר שופ 💈
 """
 
-    msg = MIMEText(body, "plain", "utf-8")
-    msg["Subject"] = subject
-    msg["From"] = ADMIN_EMAIL
-    msg["To"] = client_email
+    message = Mail(
+        from_email=ADMIN_EMAIL,
+        to_emails=client_email,
+        subject=subject,
+        plain_text_content=body,
+    )
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-        server.login(ADMIN_EMAIL, APP_PASSWORD)
-        server.sendmail(ADMIN_EMAIL, client_email, msg.as_string())
+    sg = SendGridAPIClient(SENDGRID_API_KEY)
+    sg.send(message)
