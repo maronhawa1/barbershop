@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>דשבורד מנהל</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+
+  <body>
+    <header>דשבורד מנהל - מספרת ברבר שופ 💈</header>
+
+    <div class="dashboard-container">
+      <div class="card green">
+        <h3>תורים היום</h3>
+        <p>{{ total_today }}</p>
+      </div>
+
+      <div class="card blue">
+        <h3>תורים השבוע</h3>
+        <p>{{ total_week }}</p>
+      </div>
+
+      <div class="card yellow">
+        <h3>ממתינים</h3>
+        <p>{{ pending }}</p>
+      </div>
+
+      <div class="card teal">
+        <h3>מאושרים</h3>
+        <p>{{ approved }}</p>
+      </div>
+
+      <div class="card red">
+        <h3>מבוטלים</h3>
+        <p>{{ canceled }}</p>
+      </div>
+    </div>
+
+    <div class="dashboard-actions">
+      <a class="dash-btn" href="/admin/appointments">ניהול תורים</a>
+      <a class="dash-btn" href="/">חזור לאתר</a>
+      <a class="dash-btn logout" href="/admin/logout">התנתק</a>
+    </div>
+  </body>
+</html>

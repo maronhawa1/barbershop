@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>קביעת תור</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+
+  <body>
+    <header>
+      <div class="header-content">
+        <h1 class="logo">מספרת ברבר שופ 💈</h1>
+        <a class="btn-admin" href="/admin/login">🔐 כניסת מנהל</a>
+      </div>
+    </header>
+
+    <div class="form-container">
+      <h2>קביעת תור</h2>
+
+      <form class="appointment-form">
+        <label>שם מלא:</label>
+        <input type="text" name="name" required />
+
+        <label>טלפון:</label>
+        <input type="text" name="phone" required />
+        <label>אימייל:</label>
+        <input type="email" name="email" required />
+        <label>סוג טיפול:</label>
+        <select name="service" required>
+          <option value="תספורת גבר">תספורת גבר</option>
+        </select>
+
+        <label>תאריך:</label>
+        <input
+          type="date"
+          name="date"
+          min="{{ today }}"
+          value="{{ today }}"
+          required
+          oninput="loadSlots(this.value)"
+        />
+
+        <label>בחר שעה:</label>
+        <div id="slots" class="time-grid"></div>
+
+        <button class="btn-approve" type="submit">קבע תור</button>
+      </form>
+    </div>
+
+    <script>
+      async function loadSlots(selectedDate) {
+        if (!selectedDate) return;
+
+        const d = new Date(selectedDate);
+        if (d.getDay() === 6) {
+          alert("אין עבודה בשבת!");
+          document.querySelector("input[name='date']").value = "";
+          document.getElementById("slots").innerHTML = "";
+          return;
+        }
+
+        const res = await fetch(`/api/free-slots?date=${selectedDate}`);
+        const data = await res.json();
+
+        let html = "";
+        data.slots.forEach((s) => {
+          html += `
+        <label class="time-slot">
+            <input type="radio" name="hour" value="${s}" required>
+            <span>${s}</span>
+        </label>`;
+        });
+
+        if (data.slots.length === 0) {
+          html = "<div>אין שעות פנויות ביום זה</div>";
+        }
+
+        document.getElementById("slots").innerHTML = html;
+      }
+
+      // שליחת הטופס
+      document.querySelector(".appointment-form").onsubmit = async function (
+        e
+      ) {
+        e.preventDefault();
+
+        const form = new FormData(this);
+
+        const res = await fetch("/book", {
+          method: "POST",
+          body: form,
+        });
+
+        const data = await res.json();
+
+        if (data.status === "success") {
+          alert("התור נקבע בהצלחה!");
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 800);
+        } else {
+          alert(data.msg);
+        }
+      };
+    </script>
+  </body>
+</html>

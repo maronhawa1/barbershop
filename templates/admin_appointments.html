@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ניהול תורים - מספרה</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+
+  <body>
+    <header class="admin-header">
+      <div class="header-left">ניהול תורים - מספרת ברבר שופ 💈</div>
+      <div class="header-right">
+        <a class="btn-admin" href="/admin/dashboard">📊 דשבורד</a>
+        <a class="btn-admin logout" href="/admin/logout">🚪 התנתק</a>
+      </div>
+    </header>
+
+    <div class="container">
+      <h2>רשימת תורים</h2>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>שם</th>
+            <th>טלפון</th>
+            <th>טיפול</th>
+            <th>תאריך</th>
+            <th>שעה</th>
+            <th>סטטוס</th>
+            <th>פעולות</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for appt in appointments %}
+          <tr>
+            <td>{{ appt.name }}</td>
+            <td>{{ appt.phone }}</td>
+            <td>{{ appt.service }}</td>
+            <td>{{ appt.date }}</td>
+            <td>{{ appt.hour }}</td>
+            <td>
+              <span class="status-{{ appt.status }}"> {{ appt.status }} </span>
+            </td>
+
+            <td class="actions">
+              <a class="admin-btn-approve" href="/admin/approve/{{ appt._id }}"
+                >אשר</a
+              >
+              <a class="admin-btn-cancel" href="/admin/cancel/{{ appt._id }}"
+                >בטל</a
+              >
+              <a class="admin-btn-delete" href="/admin/delete/{{ appt._id }}"
+                >מחק</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
