@@ -4,7 +4,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
 # המייל של המנהל – לשים פה את המייל שיקבל התראות
-ADMIN_EMAIL = "maronhawa1@gmail.com"
+ADMIN_EMAIL = "maronhawa13@gmail.com"
 
 # נמשוך את המפתח מהסביבה (Environment Variables ברנדר)
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
