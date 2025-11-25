@@ -631,3 +631,38 @@ tr:hover {
     font-size: 13px;
   }
 }
+/* ריווח בין כפתורי הפעולות */
+.actions a {
+  display: inline-block;
+  margin: 4px 3px !important; /* ריווח בין הכפתורים */
+  padding: 8px 14px;          /* גודל אחיד */
+  border-radius: 8px;         /* עיגול פינות */
+  font-size: 14px;
+}
+
+/* אישור */
+.admin-btn-approve {
+  background: #27ae60;
+  color: white !important;
+}
+.admin-btn-approve:hover {
+  background: #1e874b;
+}
+
+/* ביטול */
+.admin-btn-cancel {
+  background: #f1c40f;
+  color: black !important;
+}
+.admin-btn-cancel:hover {
+  background: #d4ac0d;
+}
+
+/* מחיקה */
+.admin-btn-delete {
+  background: #e74c3c;
+  color: white !important;
+}
+.admin-btn-delete:hover {
+  background: #c0392b;
+}
