@@ -7,6 +7,7 @@
   </head>
 
   <body>
+    <!-- כותרת עליונה -->
     <div class="admin-header">
       <div class="header-left">
         ניהול תורים 💈
@@ -21,6 +22,24 @@
 
     <div class="container">
       <h2 style="margin-top:0;margin-bottom:15px;">רשימת תורים</h2>
+
+      <!-- סינון לפי תאריך -->
+      <form method="GET" class="filter-bar">
+        <label for="date-filter">סינון לפי תאריך:</label>
+        <input
+          type="date"
+          id="date-filter"
+          name="date"
+          value="{{ selected_date or '' }}"
+        />
+        <button type="submit" class="dash-btn">סנן</button>
+
+        {% if selected_date %}
+        <a href="/admin/appointments" class="dash-btn">
+          ✨ הצג את כל התאריכים
+        </a>
+        {% endif %}
+      </form>
 
       <table class="admin-table">
         <thead>
@@ -45,8 +64,8 @@
             <td>{{ a.date }}</td>
             <td>{{ a.hour }}</td>
             <td class="status-{{ a.status }}">
-              {{ "ממתין" if a.status=="pending" 
-                 else "מאושר" if a.status=="approved" 
+              {{ "ממתין" if a.status=="pending"
+                 else "מאושר" if a.status=="approved"
                  else "בוטל" }}
             </td>
             <td class="actions">
