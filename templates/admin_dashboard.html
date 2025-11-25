@@ -2,44 +2,102 @@
 <html lang="he" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <title>דשבורד מנהל</title>
+    <title>לוח ניהול - מספרת ברבר שופ</title>
     <link rel="stylesheet" href="/static/style.css" />
   </head>
 
   <body>
-    <header>דשבורד מנהל - מספרת ברבר שופ 💈</header>
+    <!-- כותרת עליונה -->
+    <div class="admin-header">
+      <div class="header-left">
+        לוח ניהול - מספרת ברבר שופ 💈
+      </div>
+      <div class="header-right">
+        <a href="/admin/dashboard" class="dash-btn">🏠 דשבורד</a>
+        <a href="/admin/appointments" class="dash-btn">📅 ניהול תורים</a>
+        <a href="/" class="dash-btn">🌐 אתר הלקוחות</a>
+        <a href="/admin/logout" class="dash-btn logout">🚪 התנתק</a>
+      </div>
+    </div>
 
+    <!-- כרטיסי סטטוס -->
     <div class="dashboard-container">
       <div class="card green">
         <h3>תורים היום</h3>
-        <p>{{ total_today }}</p>
+        <div>{{ total_today }}</div>
       </div>
 
       <div class="card blue">
-        <h3>תורים השבוע</h3>
-        <p>{{ total_week }}</p>
+        <h3>סה״כ תורים בשבוע האחרון</h3>
+        <div>{{ total_week }}</div>
       </div>
 
       <div class="card yellow">
-        <h3>ממתינים</h3>
-        <p>{{ pending }}</p>
+        <h3>ממתינים לאישור</h3>
+        <div>{{ pending }}</div>
       </div>
 
       <div class="card teal">
         <h3>מאושרים</h3>
-        <p>{{ approved }}</p>
+        <div>{{ approved }}</div>
       </div>
 
       <div class="card red">
-        <h3>מבוטלים</h3>
-        <p>{{ canceled }}</p>
+        <h3>בוטלו</h3>
+        <div>{{ canceled }}</div>
       </div>
     </div>
 
+    <!-- פעולות מהירות -->
     <div class="dashboard-actions">
-      <a class="dash-btn" href="/admin/appointments">ניהול תורים</a>
-      <a class="dash-btn" href="/">חזור לאתר</a>
-      <a class="dash-btn logout" href="/admin/logout">התנתק</a>
+      <a href="/admin/appointments" class="dash-btn">
+        📋 צפייה בכל התורים
+      </a>
+      <a href="/book" class="dash-btn">
+        ➕ הוספת תור חדש עבור לקוח
+      </a>
+    </div>
+
+    <!-- תורים של היום (אופציונלי) -->
+    <div class="container">
+      <h2 style="margin-top: 0; margin-bottom: 15px;">תורים להיום</h2>
+
+      {% set today_str = today if today is defined else None %}
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>לקוח</th>
+            <th>טלפון</th>
+            <th>שירות</th>
+            <th>תאריך</th>
+            <th>שעה</th>
+            <th>סטטוס</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for appt in appointments_today %}
+          <tr>
+            <td>{{ appt.name }}</td>
+            <td>{{ appt.phone }}</td>
+            <td>{{ appt.service }}</td>
+            <td>{{ appt.date }}</td>
+            <td>{{ appt.hour }}</td>
+            <td class="status-{{ appt.status }}">
+              {{ "ממתין" if appt.status=="pending" 
+                 else "מאושר" if appt.status=="approved" 
+                 else "בוטל" }}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" style="text-align:center;">
+              אין תורים להיום.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </body>
 </html>
