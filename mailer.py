@@ -4,7 +4,8 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
 # המייל של המנהל – לשים פה את המייל שיקבל התראות
-ADMIN_EMAIL = "maronhawa13@gmail.com"
+ADMIN_EMAIL = "no-reply@maron-forms.com"
+
 
 # נמשוך את המפתח מהסביבה (Environment Variables ברנדר)
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
@@ -30,7 +31,7 @@ def send_admin_email(name, phone, service, date, hour):
 
     message = Mail(
         from_email=ADMIN_EMAIL,
-        to_emails=ADMIN_EMAIL,
+        to_emails="maronhawa13@gmail.com", 
         subject=subject,
         plain_text_content=body,
     )
