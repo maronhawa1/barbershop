@@ -1,13 +1,9 @@
-# 
+# mailer.py
 import os
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
-# המייל של המנהל – לשים פה את המייל שיקבל התראות
-ADMIN_EMAIL = "no-reply@maron-forms.com"
-
-
-# נמשוך את המפתח מהסביבה (Environment Variables ברנדר)
+ADMIN_EMAIL = "no-reply@maron-forms.com"   # הדומיין המאומת שלך
 SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 
 
@@ -18,7 +14,7 @@ def send_admin_email(name, phone, service, date, hour):
 
     subject = "תור חדש נקבע במספרה"
     body = f"""
-נרשם תור חדש:
+נרשמה בקשת תור חדשה:
 
 שם: {name}
 טלפון: {phone}
@@ -26,12 +22,12 @@ def send_admin_email(name, phone, service, date, hour):
 תאריך: {date}
 שעה: {hour}
 
-מומלץ להיכנס לפאנל הניהול.
+כדאי להיכנס לפאנל הניהול ולאשר/לבטל.
 """
 
     message = Mail(
         from_email=ADMIN_EMAIL,
-        to_emails="maronhawa13@gmail.com", 
+        to_emails="maronhawa13@gmail.com",   # המייל שלך
         subject=subject,
         plain_text_content=body,
     )
@@ -40,24 +36,57 @@ def send_admin_email(name, phone, service, date, hour):
     sg.send(message)
 
 
-def send_client_email(client_email, name, service, date, hour):
+def send_client_email(client_email, name, service, date, hour, status):
     if not SENDGRID_API_KEY:
         print("Missing SENDGRID_API_KEY, cannot send client email")
         return
 
-    subject = "אישור קביעת תור - מספרת ברבר שופ"
-    body = f"""
+    if status == "pending":
+        subject = "קיבלנו את בקשת התור - מספרת ברבר שופ"
+        body = f"""
 שלום {name},
 
-התור שלך נקבע בהצלחה!
+בקשתך לקביעת תור נקלטה במערכת וממתינה לאישור.
+
+טיפול: {service}
+תאריך: {date}
+שעה מבוקשת: {hour}
+
+לאחר האישור תקבל הודעה נוספת.
+
+מספרת ברבר שופ 💈
+"""
+    elif status == "approved":
+        subject = "התור שלך אושר - מספרת ברבר שופ"
+        body = f"""
+שלום {name},
+
+התור שלך אושר!
 
 טיפול: {service}
 תאריך: {date}
 שעה: {hour}
 
-נשמח לראות אותך,
+נתראה,
 מספרת ברבר שופ 💈
 """
+    elif status == "canceled":
+        subject = "עדכון לגבי התור - מספרת ברבר שופ"
+        body = f"""
+שלום {name},
+
+לצערנו התור שביקשת לא אושר / בוטל.
+
+טיפול: {service}
+תאריך: {date}
+שעה: {hour}
+
+ניתן לקבוע מועד חדש דרך האתר.
+
+מספרת ברבר שופ 💈
+"""
+    else:
+        return
 
     message = Mail(
         from_email=ADMIN_EMAIL,
@@ -68,3 +97,4 @@ def send_client_email(client_email, name, service, date, hour):
 
     sg = SendGridAPIClient(SENDGRID_API_KEY)
     sg.send(message)
+ 
