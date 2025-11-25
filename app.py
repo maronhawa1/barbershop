@@ -130,9 +130,21 @@ def admin_appointments():
     if not session.get("admin_logged"):
         return redirect("/admin/login")
 
-    appts = list(appointments.find().sort([("date", 1), ("hour", 1)]))
-    return render_template("admin_appointments.html", appointments=appts)
+    selected_date = request.args.get("date")  # נלקח מה-query string ?date=...
 
+    query = {}
+    if selected_date:
+        query["date"] = selected_date  # אצלך התאריך נשמר כ-"YYYY-MM-DD"
+
+    appts = list(
+        appointments.find(query).sort([("date", 1), ("hour", 1)])
+    )
+
+    return render_template(
+        "admin_appointments.html",
+        appointments=appts,
+        selected_date=selected_date
+    )
 
 @app.route("/admin/approve/<id>")
 def admin_approve(id):
