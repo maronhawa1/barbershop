@@ -238,14 +238,22 @@ def admin_dashboard():
         "date": {"$gte": week_dt.isoformat()}
     })
 
+    # תורים של היום להצגה בדשבורד
+    appts_today = list(appointments.find(
+        {"date": today}
+    ).sort([("hour", 1)]))
+
     return render_template(
         "admin_dashboard.html",
         total_today=total_today,
         total_week=total_week,
         pending=pending,
         approved=approved,
-        canceled=canceled
+        canceled=canceled,
+        appointments_today=appts_today,
+        today=today
     )
+
 @app.route("/admin/logout")
 def admin_logout():
     # מוחק את כל המידע מה־session
