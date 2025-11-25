@@ -256,14 +256,6 @@ def admin_logout():
 @app.route("/logout-message")
 def logout_message():
     return render_template("logout_message.html")
-from twilio.rest import Client
-import os
-
-# מזהי Twilio
-account_sid = "TWILIO_SID"
-auth_token = "TWILIO_AUTH"
-client = Client(account_sid, auth_token)
-
 
 # -------------------
 # הרצה
