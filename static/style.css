@@ -530,3 +530,104 @@ tr:hover {
   font-size: 22px;
   font-weight: bold;
 }
+
+/* ==== התאמה למסכים עד 768px (רוב הטלפונים) ==== */
+@media (max-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+
+  header,
+  .admin-header {
+    font-size: 18px;
+    padding: 10px 15px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 15px;
+  }
+
+  .container,
+  .form-container,
+  .logout-box,
+  .login-box {
+    width: 95%;
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  .hero {
+    padding: 80px 15px;
+    min-height: 350px;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .hero p {
+    font-size: 18px;
+  }
+
+  table,
+  .admin-table {
+    font-size: 14px;
+    display: block;
+    width: 100%;
+    overflow-x: auto; /* גלילה אופקית אם הטבלה רחבה מדי */
+  }
+
+  th,
+  td {
+    padding: 8px;
+  }
+
+  .dashboard-container {
+    grid-template-columns: 1fr;
+    margin: 20px 10px;
+  }
+
+  .card {
+    font-size: 20px;
+    padding: 18px;
+  }
+
+  .dash-btn {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+  }
+
+  .btn-admin,
+  .btn-approve {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* ==== התאמה למסכים קטנים מאוד (עד 480px) ==== */
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 26px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .time-grid {
+    grid-template-columns: 1fr; /* שעה בכל שורה */
+  }
+
+  .time-slot {
+    font-size: 18px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    font-size: 13px;
+  }
+}
