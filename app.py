@@ -99,19 +99,26 @@ def book_submit():
     appointments.insert_one({
         "name": name,
         "phone": phone,
-        
+        "email": email,
         "service": service,
         "date": date_selected,
         "hour": hour,
         "status": "pending"
-        
     })
-  #  send_admin_email(name, phone, service, date_selected, hour)
-   # send_client_email(email, name, service, date_selected, hour)
+
+    # מייל למנהל
     send_admin_email(name, phone, service, date_selected, hour)
 
-# שליחת מייל ללקוח (אם יש שדה email בטופס)
-    send_client_email(email, name, service, date_selected, hour)
+    # ללקוח – בקשה ממתינה לאישור
+    send_client_email(
+        email,
+        name,
+        service,
+        date_selected,
+        hour,
+        status="pending"
+    )
+
     return jsonify(status="success")
 
 
@@ -131,7 +138,26 @@ def admin_appointments():
 def admin_approve(id):
     if not session.get("admin_logged"):
         return redirect("/admin/login")
-    appointments.update_one({"_id": ObjectId(id)}, {"$set": {"status": "approved"}})
+
+    appt = appointments.find_one({"_id": ObjectId(id)})
+    if not appt:
+        return redirect("/admin/appointments")
+
+    appointments.update_one(
+        {"_id": appt["_id"]},
+        {"$set": {"status": "approved"}}
+    )
+
+    # מייל ווואטסאפ ללקוח – התור אושר
+    send_client_email(
+        appt["email"],
+        appt["name"],
+        appt["service"],
+        appt["date"],
+        appt["hour"],
+        status="approved",
+    )
+   
     return redirect("/admin/appointments")
 
 
@@ -139,7 +165,27 @@ def admin_approve(id):
 def admin_cancel(id):
     if not session.get("admin_logged"):
         return redirect("/admin/login")
-    appointments.update_one({"_id": ObjectId(id)}, {"$set": {"status": "canceled"}})
+
+    appt = appointments.find_one({"_id": ObjectId(id)})
+    if not appt:
+        return redirect("/admin/appointments")
+
+    appointments.update_one(
+        {"_id": appt["_id"]},
+        {"$set": {"status": "canceled"}}
+    )
+
+    # מייל ווואטסאפ ללקוח – התור בוטל
+    send_client_email(
+        appt["email"],
+        appt["name"],
+        appt["service"],
+        appt["date"],
+        appt["hour"],
+        status="canceled",
+    )
+   
+
     return redirect("/admin/appointments")
 
 
@@ -210,6 +256,14 @@ def admin_logout():
 @app.route("/logout-message")
 def logout_message():
     return render_template("logout_message.html")
+from twilio.rest import Client
+import os
+
+# מזהי Twilio
+account_sid = "TWILIO_SID"
+auth_token = "TWILIO_AUTH"
+client = Client(account_sid, auth_token)
+
 
 # -------------------
 # הרצה
