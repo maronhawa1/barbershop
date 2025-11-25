@@ -92,9 +92,10 @@
         });
 
         const data = await res.json();
-
         if (data.status === "success") {
-          alert("התור נקבע בהצלחה!");
+          alert(
+            "הבקשה לתור נקלטה וממתינה לאישור המנהל. תקבל עדכון במייל לאחר האישור."
+          );
 
           setTimeout(() => {
             window.location.reload();
